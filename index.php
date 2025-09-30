@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db/config.php';
+require 'db/config.example.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role     = trim($_POST['role']);
@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Redirect by role
             if ($role === "Consultant") {
-                header("Location: dashboard.php");
+                header("Location: backend/dashboard.php");
             } elseif ($role === "Admin") {
-                header("Location: admin.php");
+                header("Location: backend/admin.php");
             }
             exit;
         } else {

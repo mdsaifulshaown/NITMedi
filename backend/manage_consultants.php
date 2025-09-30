@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "db/config.php"; // PDO connection
+require_once __DIR__ . '/../db/config.example.php'; // PDO connection
 
 // Admin check
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {

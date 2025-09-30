@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db/config.php';
+require 'db/config.config.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
     header("Location: index.php");

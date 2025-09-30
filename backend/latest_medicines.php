@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "db/config.php";
+require_once __DIR__ . '/../db/config.example.php';
 
 // Check if Admin logged in
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
@@ -18,30 +18,31 @@ try {
 }
 
 // ===============================
-// Helper: Get patient name by type
+// Helper to get patient name
 // ===============================
-function getPatientName($type, $id, $pdo) {
+function getPatientName($type, $id, $pdo){
     if($type === "Student"){
         $stmt = $pdo->prepare("SELECT name FROM students WHERE student_id=?");
     } elseif($type === "Faculty"){
         $stmt = $pdo->prepare("SELECT name FROM faculty WHERE faculty_id=?");
     } elseif($type === "Staff"){
         $stmt = $pdo->prepare("SELECT name FROM staff WHERE staff_id=?");
-    } else return "Unknown";
-    
+    } else {
+        return "Unknown";
+    }
     $stmt->execute([$id]);
     $r = $stmt->fetch(PDO::FETCH_ASSOC);
     return $r ? $r['name'] : "Unknown";
 }
 
 // ===============================
-// Helper: Get total medicine cost for consultation
+// Helper to get total medicine cost
 // ===============================
 function getTotalMedicineCost($consultation_id, $pdo){
     $stmt = $pdo->prepare("SELECT SUM(total_price) as total FROM prescription WHERE consultation_id=?");
     $stmt->execute([$consultation_id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $row ? $row['total'] : 0;
+    $r = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $r ? $r['total'] : 0;
 }
 ?>
 <!DOCTYPE html>
@@ -73,12 +74,12 @@ function getTotalMedicineCost($consultation_id, $pdo){
     <table>
         <tr>
             <th>ID</th>
-            <th>Patient Name</th>
-            <th>Patient Type</th>
+            <th>Patient</th>
+            <th>Type</th>
             <th>Consultant ID</th>
             <th>Disease</th>
             <th>Date</th>
-            <th>Total Medicine Cost</th>
+            <th>Total Cost</th>
         </tr>
         <?php foreach ($latest_consults as $c): ?>
             <tr>

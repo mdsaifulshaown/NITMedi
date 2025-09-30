@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "db/config.php"; 
+require_once __DIR__ . '/../db/config.example.php';
 
 // Admin check
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
@@ -8,53 +8,55 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
     exit;
 }
 
-// Add Staff
-if (isset($_POST['add_staff'])) {
-    $staff_id = trim($_POST['staff_id']);
-    $name     = trim($_POST['name']);
-    $email    = trim($_POST['email']);
-    $phone    = trim($_POST['phone']);
-    $position = trim($_POST['position']);
+// Add Student
+if (isset($_POST['add_student'])) {
+    $student_id = trim($_POST['student_id']);
+    $name       = trim($_POST['name']);
+    $email      = trim($_POST['email']);
+    $phone      = trim($_POST['phone']);
+    $department = trim($_POST['department']);
+    $dob        = $_POST['dob'];
 
-    $stmt = $pdo->prepare("INSERT INTO staff (staff_id, name, email, phone, position) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$staff_id, $name, $email, $phone, $position]);
-    header("Location: manage_staff.php?msg=added");
+    $stmt = $pdo->prepare("INSERT INTO students (student_id, name, email, phone, department, dob) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$student_id, $name, $email, $phone, $department, $dob]);
+    header("Location: manage_students.php?msg=added");
     exit;
 }
 
-// Delete Staff
+// Delete Student
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $stmt = $pdo->prepare("DELETE FROM staff WHERE id=?");
+    $stmt = $pdo->prepare("DELETE FROM students WHERE id = ?");
     $stmt->execute([$id]);
-    header("Location: manage_staff.php?msg=deleted");
+    header("Location: manage_students.php?msg=deleted");
     exit;
 }
 
-// Edit Staff
-if (isset($_POST['edit_staff'])) {
-    $id       = intval($_POST['id']);
-    $staff_id = trim($_POST['staff_id']);
-    $name     = trim($_POST['name']);
-    $email    = trim($_POST['email']);
-    $phone    = trim($_POST['phone']);
-    $position = trim($_POST['position']);
+// Edit Student
+if (isset($_POST['edit_student'])) {
+    $id         = intval($_POST['id']);
+    $student_id = trim($_POST['student_id']);
+    $name       = trim($_POST['name']);
+    $email      = trim($_POST['email']);
+    $phone      = trim($_POST['phone']);
+    $department = trim($_POST['department']);
+    $dob        = $_POST['dob'];
 
-    $stmt = $pdo->prepare("UPDATE staff SET staff_id=?, name=?, email=?, phone=?, position=? WHERE id=?");
-    $stmt->execute([$staff_id, $name, $email, $phone, $position, $id]);
-    header("Location: manage_staff.php?msg=updated");
+    $stmt = $pdo->prepare("UPDATE students SET student_id=?, name=?, email=?, phone=?, department=?, dob=? WHERE id=?");
+    $stmt->execute([$student_id, $name, $email, $phone, $department, $dob, $id]);
+    header("Location: manage_students.php?msg=updated");
     exit;
 }
 
-// Fetch all staff
-$staffs = $pdo->query("SELECT * FROM staff ORDER BY staff_id DESC")->fetchAll(PDO::FETCH_ASSOC);
+// Fetch all students
+$students_stmt = $pdo->query("SELECT * FROM students ORDER BY id DESC");
+$students = $students_stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Staff - NITMedi</title>
+    <title>Manage Students - NITMedi</title>
     <link rel="stylesheet" href="assets/style.css">
     <style>
         body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f6fa; }
@@ -77,11 +79,11 @@ $staffs = $pdo->query("SELECT * FROM staff ORDER BY staff_id DESC")->fetchAll(PD
 </head>
 <body>
 <header>
-    <h2>Manage Staff</h2>
+    <h2>Manage Students</h2>
     <nav>
         <a href="admin.php">Dashboard</a>
-        <a href="manage_students.php">Students</a>
         <a href="manage_faculty.php">Faculty</a>
+        <a href="manage_staff.php">Staff</a>
         <a href="manage_consultants.php">Consultants</a>
         <a href="manage_medicines.php">Medicines</a>
     </nav>
@@ -89,32 +91,34 @@ $staffs = $pdo->query("SELECT * FROM staff ORDER BY staff_id DESC")->fetchAll(PD
 </header>
 
 <div class="container">
-    <h2>Add New Staff</h2>
+    <h2>Add New Student</h2>
     <form method="POST">
-        <input type="text" name="staff_id" placeholder="Staff ID" required>
+        <input type="text" name="student_id" placeholder="Student ID" required>
         <input type="text" name="name" placeholder="Full Name" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="phone" placeholder="Phone Number" required>
-        <input type="text" name="position" placeholder="Position" required>
-        <button type="submit" name="add_staff">Add Staff</button>
+        <input type="text" name="department" placeholder="Department" required>
+        <input type="date" name="dob" required>
+        <button type="submit" name="add_student">Add Student</button>
     </form>
 
-    <h2>Staff List</h2>
+    <h2>Students List</h2>
     <table>
         <tr>
-            <th>ID</th><th>Staff ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Position</th><th>Actions</th>
+            <th>ID</th><th>Student ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Department</th><th>DOB</th><th>Actions</th>
         </tr>
-        <?php foreach ($staffs as $s): ?>
+        <?php foreach ($students as $s): ?>
             <tr>
                 <td><?= $s['id'] ?></td>
-                <td><?= htmlspecialchars($s['staff_id']) ?></td>
+                <td><?= htmlspecialchars($s['student_id']) ?></td>
                 <td><?= htmlspecialchars($s['name']) ?></td>
                 <td><?= htmlspecialchars($s['email']) ?></td>
                 <td><?= htmlspecialchars($s['phone']) ?></td>
-                <td><?= htmlspecialchars($s['position']) ?></td>
+                <td><?= htmlspecialchars($s['department']) ?></td>
+                <td><?= htmlspecialchars($s['dob']) ?></td>
                 <td class="action-btns">
-                    <a href="manage_staff.php?edit=<?= $s['id'] ?>" class="edit-btn">Edit</a>
-                    <a href="manage_staff.php?delete=<?= $s['id'] ?>" class="delete-btn" onclick="return confirm('Are you sure to delete?')">Delete</a>
+                    <a href="manage_students.php?edit=<?= $s['id'] ?>" class="edit-btn">Edit</a>
+                    <a href="manage_students.php?delete=<?= $s['id'] ?>" class="delete-btn" onclick="return confirm('Are you sure to delete?')">Delete</a>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -122,17 +126,20 @@ $staffs = $pdo->query("SELECT * FROM staff ORDER BY staff_id DESC")->fetchAll(PD
 
     <?php if (isset($_GET['edit'])): 
         $edit_id = intval($_GET['edit']);
-        $edit_s = $pdo->query("SELECT * FROM staff WHERE id=$edit_id")->fetch(PDO::FETCH_ASSOC);
+        $stmt = $pdo->prepare("SELECT * FROM students WHERE id = ?");
+        $stmt->execute([$edit_id]);
+        $edit_s = $stmt->fetch(PDO::FETCH_ASSOC);
     ?>
-        <h2>Edit Staff</h2>
+        <h2>Edit Student</h2>
         <form method="POST">
             <input type="hidden" name="id" value="<?= $edit_s['id'] ?>">
-            <input type="text" name="staff_id" value="<?= htmlspecialchars($edit_s['staff_id']) ?>" required>
+            <input type="text" name="student_id" value="<?= htmlspecialchars($edit_s['student_id']) ?>" required>
             <input type="text" name="name" value="<?= htmlspecialchars($edit_s['name']) ?>" required>
             <input type="email" name="email" value="<?= htmlspecialchars($edit_s['email']) ?>" required>
             <input type="text" name="phone" value="<?= htmlspecialchars($edit_s['phone']) ?>" required>
-            <input type="text" name="position" value="<?= htmlspecialchars($edit_s['position']) ?>" required>
-            <button type="submit" name="edit_staff">Update Staff</button>
+            <input type="text" name="department" value="<?= htmlspecialchars($edit_s['department']) ?>" required>
+            <input type="date" name="dob" value="<?= htmlspecialchars($edit_s['dob']) ?>" required>
+            <button type="submit" name="edit_student">Update Student</button>
         </form>
     <?php endif; ?>
 </div>

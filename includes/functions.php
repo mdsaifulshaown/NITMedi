@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../db/config.php';
+require_once __DIR__ . '/../db/config.example.php';
 
 // ===============================
 // Student Functions
@@ -153,5 +153,16 @@ function getPreviousConsultations($patient_type, $patient_id) {
     ");
     $stmt->execute([$patient_type, $patient_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// ===============================
+// Total Price (all consultations)
+// ===============================
+function getTotalSpent($patient_type, $patient_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT SUM(total_price) as total FROM consultations WHERE patient_type = ? AND patient_id = ?");
+    $stmt->execute([$patient_type, $patient_id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row && $row['total'] !== null ? (float)$row['total'] : 0;
 }
 ?>
