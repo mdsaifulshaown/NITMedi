@@ -1,11 +1,16 @@
 <?php
 // create_users.php — Run once, then DELETE this file for security.
+require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 
 try {
-    $host = "localhost";
-    $db   = "medical_center";
-    $user = "root";
-    $pass = "7890"; 
+    $host = $_ENV['DB_HOST'];
+    $db   = $_ENV['DB_NAME'];
+    $user = $_ENV['DB_USER'];
+    $pass = $_ENV['DB_PASS'];
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
@@ -15,16 +20,16 @@ try {
 // Change these credentials if you want different ones
 $users = [
     [
-        'name' => 'Admin User',
-        'email' => 'b24cs041@nitm.ac.in',
-        'password_plain' => 'admin123',
-        'role' => 'Admin'   // must match role check in your login code
+        'name' => $_ENV['ADMIN_NAME'],
+        'email' => $_ENV['ADMIN_EMAIL'],
+        'password_plain' => $_ENV['ADMIN_PASSWORD'],
+        'role' => $_ENV['ADMIN_ROLE'] // must match role check in your login code
     ],
     [
-        'name' => 'Dr Consultant',
-        'email' => 'binarybin2003@gmail.com',
-        'password_plain' => 'consult123',
-        'role' => 'Consultant'
+        'name' => $_ENV['CONSULTANT_NAME'],
+        'email' => $_ENV['CONSULTANT_EMAIL'],
+        'password_plain' => $_ENV['CONSULTANT_PASSWORD'],
+        'role' => $_ENV['CONSULTANT_ROLE']
     ]
 ];
 
