@@ -91,18 +91,40 @@ Steps
 Project Structure
 
 NITMedi/
-│
-├── admin/                  # Admin panel pages
-├── consultant/             # Consultant dashboard
-├── db/                     # Database configuration and schema
-│   ├── config.php          # Your actual config (not pushed to GitHub)
-│   └── config.example.php  # Example config (safe to push)
-├── includes/               # Shared functions
-├── index.php               # Landing page with role selection
-├── dashboard.php           # Consultant/Admin dashboard
-└── README.md               # Project documentation
-
-
+├── assets/
+│   └── NITM logo.png
+├── backend/
+│   ├── add_consultant.php
+│   ├── admin.php
+│   ├── create_users.php
+│   ├── dashboard.php
+│   ├── delete_consultant.php
+│   ├── edit_consultant.php
+│   ├── high_cost_patients.php
+│   ├── latest_consultations.php
+│   ├── latest_medicines.php
+│   ├── logout.php
+│   ├── manage_consultants.php
+│   ├── manage_faculty.php
+│   ├── manage_medicines.php
+│   ├── manage_staff.php
+│   ├── manage_students.php
+│   ├── patient_search.php
+│   ├── print_consultation.php
+│   └── submit_consultation.php
+├── db/
+│   ├── config.php
+│   └── includes/
+│       └── functions.php
+├── js/
+│   ├── admin.js
+│   ├── consultation.js
+│   └── dashboard.js
+├── pdf/
+├── sql/
+│   └── schema.sql
+├── index.php
+└── README.MD
 
 
 Security Notes
